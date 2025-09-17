@@ -1,0 +1,89 @@
+/dts-v1/;
+
+/ {
+	#address-cells = <0x02>;
+	#size-cells = <0x02>;
+	compatible = "agic,ax65";
+	model = "AGIC AX65 Board";
+
+	chosen {
+		stdout-path = "/soc/serial@6000000";
+		bootargs = "console=ttyS0,115200n8 earlycon=sbi";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00 0x00100000 0x00 0x8000000
+			   0x00 0x40000000 0x00 0x1C800000>;
+	};
+
+	cpus {
+		#address-cells = <0x01>;
+		#size-cells = <0x00>;
+		timebase-frequency = <0x16e3600>;
+
+		cpu@0 {
+			phandle = <0x01>;
+			device_type = "cpu";
+			reg = <0x00>;
+			status = "okay";
+			compatible = "riscv";
+			riscv,isa = "rv64imafdc_zic64b_zicbom_zicboz_ziccamoa_ziccif_zicclsm_ziccrse_zicntr_zicsr_zifencei_zihpm_zmmul_za64rs_zaamo_zalrsc_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbkb_zbkc_zbkx_zbs_zk_zkn_zknd_zkne_zknh_zkr_zks_zksed_zksh_zkt_shcounterenw_shgatpa_shtvala_shvsatpa_shvstvala_shvstvecd_smepmp_ssccptr_sscofpmf_sscounterenw_sstvala_sstvecd_svinval_svnapot_svpbmt_xandesv5ops_xandescodenseops";
+			mmu-type = "riscv,sv39";
+
+			cpu0_intc: interrupt-controller {
+				#interrupt-cells = <0x01>;
+				interrupt-controller;
+				compatible = "riscv,cpu-intc";
+				phandle = <0x02>;
+			};
+		};
+
+		cpu-map {
+		};
+	};
+
+	soc {
+		#address-cells = <0x02>;
+		#size-cells = <0x02>;
+		compatible = "simple-bus";
+		ranges;
+
+		serial@6000000 {
+			compatible = "snps,dw-apb-uart", "ns16550a";
+			reg = <0x00 0x06000000 0x00 0x1000>;
+			interrupts = <0x24 0x04>;
+			interrupt-parent = <&plic>;
+			clock-frequency = <0x17D7840>;
+			reg-shift = <0x02>;
+			reg-io-width = <0x04>;
+		};
+
+		plmt0@d00000 {
+			reg = <0x00 0x00d00000 0x00 0x1000>;
+			interrupts-extended = <&cpu0_intc 0x07>;
+			compatible = "andestech,plmt0";
+		};
+
+		plicsw: interrupt-controller@800000 {
+			riscv,ndev = <0x01>;
+			reg = <0x00 0x00800000 0x00 0x400000>;
+			interrupts-extended = <&cpu0_intc 0x03>;
+			interrupt-controller;
+			compatible = "andestech,plicsw";
+			#interrupt-cells = <0x02>;
+			#address-cells = <0x02>;
+		};
+
+		plic: interrupt-controller@400000 {
+			phandle = <0x03>;
+			riscv,ndev = <0x47>;
+			reg = <0x00 0x00400000 0x00 0x400000>;
+			interrupts-extended = <&cpu0_intc 0x0b>, <&cpu0_intc 0x09>;
+			interrupt-controller;
+			compatible = "riscv,plic0";
+			#interrupt-cells = <0x02>;
+			#address-cells = <0x02>;
+		};
+	};
+};

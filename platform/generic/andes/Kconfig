@@ -20,3 +20,11 @@ config ANDES_PMU
 	  Andes PMU extension supports the event counter overflow
 	  interrupt and mode filtering, similar to the standard
 	  Sscofpmf and Smcntrpmf.
+
+config PLATFORM_ANDES_AX65
+	bool "Andes AX65 platform override"
+	default y
+	help
+	  Enables a small platform override for boards whose DT compatible
+	  is "agic,ax65". It enables MCACHE_CTL.CCTL_SUEN at final_init so
+	  S-mode can access ucctl* CSRs on AX65.

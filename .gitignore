@@ -18,5 +18,10 @@ install/
 
 # Development friendly files
 tags
-cscope*
-*~
+log/
+gdb.sh
+build.log
+compile_commands.json
+after_opensbi.bin
+after_opensbi
+

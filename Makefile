@@ -397,7 +397,7 @@ CPPFLAGS	+=	$(GENFLAGS)
 CPPFLAGS	+=	$(platform-cppflags-y)
 CPPFLAGS	+=	$(firmware-cppflags-y)
 
-ASFLAGS		=	-g -Wall -nostdlib
+ASFLAGS		=	-g3 -Wall -nostdlib
 ASFLAGS		+=	-fno-omit-frame-pointer -fno-optimize-sibling-calls
 ASFLAGS		+=	-fPIE
 ASFLAGS		+=	$(REPRODUCIBLE_FLAGS)
@@ -443,8 +443,7 @@ MERGEFLAGS	+=	-m elf$(PLATFORM_RISCV_XLEN)lriscv
 DTSCPPFLAGS	=	$(CPPFLAGS) -nostdinc -nostdlib -fno-builtin -D__DTS__ -x assembler-with-cpp
 
 ifneq ($(DEBUG),)
-CFLAGS		+=	-O0
-ELFFLAGS	+=	-Wl,--print-gc-sections
+CFLAGS		+=	-Og
 else
 CFLAGS		+=	-O2
 endif
@@ -505,7 +504,7 @@ compile_as = $(CMD_PREFIX)mkdir -p `dirname $(1)`; \
 	     $(AS) $(ASFLAGS) $(call dynamic_flags,$(1),$(2)) -c $(2) -o $(1)
 compile_elf = $(CMD_PREFIX)mkdir -p `dirname $(1)`; \
 	     echo " ELF       $(subst $(build_dir)/,,$(1))"; \
-	     $(CC) $(CFLAGS) $(3) $(ELFFLAGS) -Wl,-T$(2) -o $(1)
+	     $(CC) $(CFLAGS) $(3) $(ELFFLAGS) -Wl,-T$(2) -Wl,-Map=$(1:.elf=.map) -o $(1)
 compile_ar = $(CMD_PREFIX)mkdir -p `dirname $(1)`; \
 	     echo " AR        $(subst $(build_dir)/,,$(1))"; \
 	     $(AR) $(ARFLAGS) $(1) $(2)

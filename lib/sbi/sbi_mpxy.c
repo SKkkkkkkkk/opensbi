@@ -594,7 +594,7 @@ int sbi_mpxy_write_attrs(u32 channel_id, u32 base_attr_id, u32 attr_count)
 	struct mpxy_state *ms = sbi_domain_mpxy_state_thishart_ptr();
 	u32 *mem_ptr, attr_id, end_id, attr_val;
 	struct sbi_mpxy_channel *channel;
-	int ret, mem_idx;
+	int ret = 0, mem_idx;
 	void *shmem_base;
 
 	if (!mpxy_shmem_enabled(ms))

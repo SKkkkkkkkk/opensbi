@@ -1,0 +1,1 @@
+CROSS_COMPILE=riscv64-unknown-linux-gnu- make PLATFORM=generic -B -j
