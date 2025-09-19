@@ -181,7 +181,8 @@ def add_image_header(bin_filename, output_filename=None, entrypoint=0, git_sha="
     print(f"  Entry point: 0x{entrypoint:016x}")
     print(f"  Git SHA: {git_sha}")
     if private_key_file:
-        print(f"  Signature: {'Generated' if signature != b'\\x00' * 64 else 'Zero (failed to generate)'}")
+        zero_signature = b'\x00' * 64
+        print(f"  Signature: {'Generated' if signature != zero_signature else 'Zero (failed to generate)'}")
     print(f"  Total file size: {IMAGE_HDR_SIZE_BYTES + data_size} bytes")
 
 
