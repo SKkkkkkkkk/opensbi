@@ -17,6 +17,8 @@ build/
 install/
 
 # Development friendly files
+venv/
+__pycache__/
 tags
 log/
 gdb.sh
