@@ -21,13 +21,16 @@ void __attribute__((naked)) after_opensbi(void)
         "sret\n"                   // 跳转到U模式
         
         "user_code:\n"
-        // 现在在U模式，可以直接读写UART
         "li t0, 0x060000f8\n"      // UART基地址
         "lw t1, 0(t0)\n"           // 读取UART寄存器
-        // ... 其他U模式代码
+        
+        // System reset: 写0到0x06400400
+        "li t2, 0x06400400\n"      // 系统重置寄存器地址
+        "li t3, 0\n"               // 写入值0
+        "sw t3, 0(t2)\n"           // 执行系统重置
         
         "1: j 1b\n"
         :
         : "i" (sizeof(hello_str) - 1), "i" (hello_str)
-        : "a0", "a1", "a2", "a6", "a7", "t0", "t1");
+        : "a0", "a1", "a2", "a6", "a7", "t0", "t1", "t2", "t3");
 }
